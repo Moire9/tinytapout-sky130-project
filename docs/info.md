@@ -45,8 +45,8 @@ The
 
 ## How to test
 
-Explain how to use your project
+Text test lalala
 
 ## External hardware
 
-List external hardware used in your project (e.g. PMOD, LED display, etc), if any
+4-digit 7-segment display with common cathode. Two external sensors of any kind, active high.
