@@ -16,7 +16,7 @@ module tt_um_moire9_abysmal_dogshit_application (
     input  wire       rst_n     // reset_n - low to reset
 );
 
-  assign uio_oe  = 8b'11111111;
+  assign uio_oe = 8'b11111111;
 
   top top(
 		.board_clk_i(clk),

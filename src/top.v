@@ -9,7 +9,7 @@ module top(
 	output        dp_o,
 	output [6:0]  seg_o,
 	output [3:0]  an_o,
-	output [3:0] led_o
+	output [15:0] led_o
 );
 
 // DEFINITIONS
@@ -77,7 +77,7 @@ turkey_counter turkey_counter(
 	.clk_i  (clk_i),
 	.inc_i  (strobe_increment_turkeys),
 	.dec_i  (strobe_decrement_turkeys),
-	.reset_i(0),
+	.reset_i(1'b0),
 	.Q_o    (turkeys)
 );
 
