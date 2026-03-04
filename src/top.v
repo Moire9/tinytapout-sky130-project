@@ -79,7 +79,6 @@ turkey_counter turkey_counter(
 	.reset_i(reset_i),
 	.inc_i  (strobe_increment_turkeys),
 	.dec_i  (strobe_decrement_turkeys),
-	.reset_i(1'b0),
 	.Q_o    (turkeys)
 );
 

@@ -5,7 +5,6 @@ module turkey_counter(
 	input reset_i,
 	input inc_i,
 	input dec_i,
-	input reset_i,
 	output [7:0] Q_o
 );
     reg [7:0] Q;
