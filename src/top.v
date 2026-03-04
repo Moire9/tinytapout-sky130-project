@@ -41,8 +41,8 @@ wire btnL, btnR;
 
 wire [7:0] turkeys;
 wire negative_turkeys = turkeys[7];
-wire [7:0] turkeys_inverted;
-inc #(.WIDTH(8)) inc(.i(~turkeys), .o(turkeys_inverted));
+wire [7:0] turkeys_inverted = ~turkeys + 1;
+// inc #(.WIDTH(8)) inc(.i(~turkeys), .o(turkeys_inverted));
 wire [7:0] turkeys_abs = `IF(8, negative_turkeys, turkeys_inverted, turkeys);
 
 reg ever_crossed; // Starts at 0 then goes 1 forever
