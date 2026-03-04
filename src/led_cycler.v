@@ -18,7 +18,7 @@ reg [7:0] led_q;
 
 always @(posedge clk_i) begin
 	if (reset_i) begin
-		led_q <= 8'b1
+		led_q <= 8'b1;
 	end else begin
 		led_q <= led_d;
 	end
