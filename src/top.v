@@ -2,7 +2,7 @@
 
 module top(
 	input board_clk_i,
-	input btnU_async_i,
+	input reset_i,
 	input btnL_async_i,
 	input btnR_async_i,
 
@@ -29,7 +29,7 @@ wire digsel; // 60 Hz
 
 clock_divider clock_divider(
 	.clk_in(board_clk_i),
-	.reset(btnU_async_i),
+	.reset(reset_i),
 	.clk_4Hz(clk_4Hz),
 	.clk_11MHz_div(clk_i),
 	.digsel(digsel)
@@ -45,9 +45,9 @@ wire [7:0] turkeys_inverted;
 inc #(.WIDTH(8)) inc(.i(~turkeys), .o(turkeys_inverted));
 wire [7:0] turkeys_abs = `IF(8, negative_turkeys, turkeys_inverted, turkeys);
 
-reg ever_crossed = 0; // Starts at 0 then goes 1 forever
+reg ever_crossed; // Starts at 0 then goes 1 forever
 wire ever_crossed_d;
-reg last_direction = 0;
+reg last_direction;
 wire last_direction_d;
 wire currently_crossing; // suspends LED direction
 
@@ -67,6 +67,7 @@ wire strobe_decrement_turkeys;
 
 ring_counter ring_counter(
 	.clk_i    (clk_i),
+	.reset_i  (reset_i),
 	.advance_i(digsel),
 	.ring_o   (hex_digit_index)
 );
@@ -75,29 +76,42 @@ ring_counter ring_counter(
 
 turkey_counter turkey_counter(
 	.clk_i  (clk_i),
+	.reset_i(reset_i),
 	.inc_i  (strobe_increment_turkeys),
 	.dec_i  (strobe_decrement_turkeys),
 	.reset_i(1'b0),
 	.Q_o    (turkeys)
 );
 
-`FCDQ(clk_i, last_direction_d, last_direction);
+always @(posedge clk_i) begin
+	if (reset_i) begin
+		last_direction <= 0;
+		ever_crossed <= 0;
+	end else begin
+		last_direction <= last_direction_d;
+		ever_crossed <= ever_crossed_d;
+	end
+end
+
+// `FCDQ(clk_i, last_direction_d, last_direction);
 assign last_direction_d = (strobe_increment_turkeys & DIRECTION_R2L) |
 	(strobe_decrement_turkeys & DIRECTION_L2R) |
 	((~strobe_decrement_turkeys & ~strobe_increment_turkeys) & last_direction);
 
-`FCDQ(clk_i, ever_crossed_d, ever_crossed);
+// `FCDQ(clk_i, ever_crossed_d, ever_crossed);
 assign ever_crossed_d = ever_crossed | strobe_decrement_turkeys | strobe_increment_turkeys;
 
 // INPUT
 
 edge_detector #(.STROBE(0)) sync_btnL(
 	.clk_i   (clk_i),
+	.reset_i (reset_i),
 	.button_i(~btnL_async_i),
 	.edge_o  (btnL)
 );
 edge_detector #(.STROBE(0)) sync_btnR(
 	.clk_i   (clk_i),
+	.reset_i (reset_i),
 	.button_i(~btnR_async_i),
 	.edge_o  (btnR)
 );
@@ -125,6 +139,7 @@ assign dp_o = 1;
 
 led_cycler led_cycler(
 	.clk_i      (clk_i),
+	.reset_i    (reset_i),
 	.cycle_i    (clk_4Hz),
 	.direction_i(last_direction),
 	.enable_i   (!currently_crossing && ever_crossed),
@@ -139,6 +154,7 @@ assign led_o[8] = btnR;
 
 fsm fsm(
 	.clk_i(clk_i),
+	.reset_i(reset_i),
 	.L_i  (btnL),
 	.R_i  (btnR),
 

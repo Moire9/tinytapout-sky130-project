@@ -22,16 +22,22 @@
 
 module ring_counter(
     input clk_i,
+    input reset_i,
     input advance_i,
     output [3:0] ring_o
 );
 
-    reg [3:0] out = 1;
+    reg [3:0] out;
     always @(posedge clk_i) begin
-        if (out == 1)
-            out <= 4'b1000;
-        else
-            out <= out >> 1;
+        if (reset_i) begin
+            out <= 4'b0001;
+        end else begin
+            if (out == 1) begin
+                out <= 4'b1000;
+            end else begin
+                out <= out >> 1;
+            end
+        end
     end
     assign ring_o = out; 
     

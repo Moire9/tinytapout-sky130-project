@@ -20,7 +20,7 @@ module tt_um_moire9_abysmal_dogshit_application (
 
   top top(
 		.board_clk_i(clk),
-		.btnU_async_i(~rst_n),
+		.reset_i(~rst_n),
 		.btnR_async_i(ui_in[0]),
 		.btnL_async_i(ui_in[1]),
 		.dp_o(uo_out[7]),

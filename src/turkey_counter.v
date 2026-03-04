@@ -2,18 +2,28 @@
 
 module turkey_counter(
 	input clk_i,
+	input reset_i,
 	input inc_i,
 	input dec_i,
 	input reset_i,
 	output [7:0] Q_o
 );
-    reg [7:0] Q = 0;
+    reg [7:0] Q;
     assign Q_o = Q;
 	wire keep = (~inc_i & ~dec_i & ~reset_i) | (inc_i & dec_i & ~reset_i);
 
 	wire [7:0] ff_D;
 
-	`FF_BUS(clk_i, ff_D, Q, 0, 7)
+
+	always @(clk_i) begin
+		if (reset_i) begin
+			Q <= 0;
+		end else begin
+			Q <= ff_D;
+		end
+	end
+
+	// `FF_BUS(clk_i, ff_D, Q, 0, 7)
 
 	wire [7:0] incremented;
 	wire [7:0] decremented;

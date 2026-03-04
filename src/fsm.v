@@ -5,6 +5,7 @@
 
 module fsm(
 	input clk_i,
+	input reset_i,
 	input L_i,
 	input R_i,
 
@@ -22,6 +23,7 @@ wire R_direction;
 
 signal_direction direction_L(
 	.clk_i      (clk_i),
+	.reset_i    (reset_i),
 	.signal_i   (L_i),
 	.change_o   (L_change),
 	.direction_o(L_direction)
@@ -29,6 +31,7 @@ signal_direction direction_L(
 
 signal_direction direction_R(
 	.clk_i      (clk_i),
+	.reset_i    (reset_i),
 	.signal_i   (R_i),
 	.change_o   (R_change),
 	.direction_o(R_direction)
@@ -45,12 +48,20 @@ parameter R2L_COVER    = 5;
 parameter R2L_LEAVING  = 6;
 
 wire [6:0] state_d;
-reg [6:0] state_q = 7'b0000001;
+reg [6:0] state_q;
+
+always @(posedge clk_i) begin
+	if (reset_i) begin
+		state_q <= 7'b0000001;
+	end else begin
+		state_q <= state_d;
+	end
+end
 
 // Someone showed me a way to use a single FDRE call to generate a bus of FFs.
 // I could not remember how to do it or replicate it.
-`FCDQI (clk_i, state_d[0], state_q[0], 1'b1);
-`FF_BUS(clk_i, state_d, state_q, 1, 6);
+// `FCDQI (clk_i, state_d[0], state_q[0], 1'b1);
+// `FF_BUS(clk_i, state_d, state_q, 1, 6);
 
 // STATE TRANSITIONS
 
