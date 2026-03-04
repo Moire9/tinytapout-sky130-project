@@ -10,8 +10,8 @@ module edge_detector
     input button_i,
     output edge_o
 );
-	reg current_Q = 0;
-	reg old_Q = 0;
+	reg current_Q;
+	reg old_Q;
 	
 	always @(posedge clk_i) begin
 		if (reset_i) begin
@@ -34,5 +34,5 @@ module edge_detector
 	// endgenerate
 	
 	// assign edge_o = old_Q == 0 && current_Q == 1;
-	assign edge_o = `IF(1, STROBE, ~old_Q && current_Q, current_Q);
+	assign edge_o = STROBE ? ~old_Q && current_Q : current_Q; //`IF(1, STROBE, ~old_Q && current_Q, current_Q);
 endmodule

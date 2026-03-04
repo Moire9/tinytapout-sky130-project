@@ -17,7 +17,8 @@ module tt_um_moire9_abysmal_dogshit_application (
 );
 
   assign uio_oe = 8'b11111111;
-
+  wire [15:0] led_o;
+  assign uio_out[7:4] = led_o[3:0];
   top top(
 		.board_clk_i(clk),
 		.reset_i(~rst_n),
@@ -26,7 +27,7 @@ module tt_um_moire9_abysmal_dogshit_application (
 		.dp_o(uo_out[7]),
 		.seg_o(uo_out[6:0]),
 		.an_o(uio_out[3:0]),
-		.led_o(uio_out[7:4])
+		.led_o(led_o)
   );
 
   // List all unused inputs to prevent warnings

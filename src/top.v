@@ -178,7 +178,7 @@ module clock_divider (
     reg [3 :0] clk_counter_11mhz;
     reg [20:0] clk_counter_digsel;
 
-    always @(posedge clk_in or posedge reset) begin
+    always @(posedge clk_in) begin
         if (reset) begin
             clk_counter_4hz   <= 24'd0;
             clk_counter_11mhz <= 4'd0;
