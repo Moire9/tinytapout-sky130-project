@@ -16,7 +16,7 @@ reg [7:0] led_q;
 // `FCDQI(clk_i, led_d[0], led_q[0], 1);
 // `FF_BUS(clk_i, led_d, led_q, 1, 7);
 
-always @(posedge clk_i) begin
+always @(posedge clk_i or posedge reset_i) begin
 	if (reset_i) begin
 		led_q <= 8'b1;
 	end else begin

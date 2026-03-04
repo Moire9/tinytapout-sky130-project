@@ -24,11 +24,13 @@ module tt_um_moire9_abysmal_dogshit_application (
 		.reset_i(~rst_n),
 		.btnR_async_i(ui_in[0]),
 		.btnL_async_i(ui_in[1]),
-		.dp_o(uo_out[7]),
+		// .dp_o(uo_out[7]), // TODO
 		.seg_o(uo_out[6:0]),
 		.an_o(uio_out[3:0]),
 		.led_o(led_o)
   );
+
+  assign uo_out[7] = 1'b0;
 
   // List all unused inputs to prevent warnings
   wire _unused = &{ena, ui_in[7:3], uio_in, 1'b0};

@@ -13,7 +13,7 @@ module edge_detector
 	reg current_Q;
 	reg old_Q;
 	
-	always @(posedge clk_i) begin
+	always @(posedge clk_i or posedge reset_i) begin
 		if (reset_i) begin
 			current_Q <= 0;
 			old_Q <= 0;

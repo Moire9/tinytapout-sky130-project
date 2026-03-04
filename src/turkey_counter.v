@@ -10,7 +10,7 @@ module turkey_counter(
     reg [7:0] Q;
     assign Q_o = Q;
 
-	always @(posedge clk_i) begin
+	always @(posedge clk_i or posedge reset_i) begin
 		if (reset_i)
 			Q <= 0;
 		else if (inc_i)

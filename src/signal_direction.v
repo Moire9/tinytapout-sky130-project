@@ -11,7 +11,7 @@ module signal_direction(
 
 reg signal_q, previous_q;
 
-always @(posedge clk_i) begin
+always @(posedge clk_i or posedge reset_i) begin
 	if (reset_i) begin
 		signal_q <= 0;
 		previous_q <= 0;

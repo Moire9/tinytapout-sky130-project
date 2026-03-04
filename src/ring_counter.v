@@ -28,7 +28,7 @@ module ring_counter(
 );
 
     reg [3:0] out;
-    always @(posedge clk_i) begin
+    always @(posedge clk_i or posedge reset_i) begin
         if (reset_i) begin
             out <= 4'b0001;
         end else begin

@@ -82,7 +82,7 @@ turkey_counter turkey_counter(
 	.Q_o    (turkeys)
 );
 
-always @(posedge clk_i) begin
+always @(posedge clk_i or posedge reset_i) begin
 	if (reset_i) begin
 		last_direction <= 0;
 		ever_crossed <= 0;

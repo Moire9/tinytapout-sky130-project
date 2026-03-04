@@ -28,24 +28,40 @@ spend $100 on a small piece of silicon that doesn't do anything (so I would
 probably have to convince BELS or a friend to let me borrow an FPGA, and then
 adapt the code to the FPGA).
 
-So instead have my CSE 100 Lab 5. In retrospect, the amount of time that I
-spent making it work might be more than the amount of time it would have taken
-to do the first of the 3 above. I try not to think about that because I value
-my happiness.
-
 TT still has a while before the sky shuttle... I might pick this back up and
 actually do what I wanted to when I have any free time at all.
 
-<sub><sup>Apologies, dear teach{er, ing assistant}, for what has devolved into
-a rant. Sometimes it's good to out your frustration.</sup></sub>
+So what this project actually is is a counter that counts objects passing
+before two sensors (see below).
+
+The code is not amazing quality - it's hastily adapated CSE 100 code, I'll be
+honest. It has barely scratched the surface of the mind-croggling powers of
+openroad. But it's given me a good taste of what I can, and will, be doing. :D
+
+GenAI usage: consulted with some tools for help debugging verilog with limited
+success. The `clock_divider` module is something that I wrote filtered through
+an LLM because it wasn't working, I ended up copying its output wholesale (did
+not fix the problem), later realized it was something completely unrelated
+which I quickly fixed but I no longer had my original clock divider code. But
+it was almost identical to what is there now, except for minor convention and
+naming.
 
 ## How it works
 
-The
+The module takes in two inputs, that are to represent active-high presence-
+detection sensors (e.g. IR laser interrupted by objects in its path). Assuming
+that they are not placed too far apart, the module is capable of determining
+whether things that pass in front of the sensors are moving in one direction or
+the other. The module keeps a running total of objects that pass before the
+sensors, and displays the net number of leftward-passing objects minus the
+number of rightwards-passing objects. This is displayed on four seven-segment
+display modules with the currently active one selected by one of the output pins.
 
 ## How to test
 
-Text test lalala
+The test script tests the full range of incrementation and decrementation
+capabilities. It also logs the 7-segment output at a few points, but it's a bit
+hard to interpret.
 
 ## External hardware
 

@@ -50,7 +50,7 @@ parameter R2L_LEAVING  = 6;
 wire [6:0] state_d;
 reg [6:0] state_q;
 
-always @(posedge clk_i) begin
+always @(posedge clk_i or posedge reset_i) begin
 	if (reset_i) begin
 		state_q <= 7'b0000001;
 	end else begin
