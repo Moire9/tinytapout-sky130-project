@@ -22,6 +22,15 @@ async def test_project(dut):
         sevenseg = sevenseg << 8 | v(dut.uo_out)
         dut._log.info(hex(sevenseg))
 
+    ass = True
+
+    try: # check if we can access submodules
+        dut.user_project.top
+    except AttributeError:
+        dut._log.info("Skipping assert - we are not able to evaluate gate-level because cocotb does not"
+            + "give us access to the datapaths directly (or maybe I'm missing something obvious)")
+        ass = False
+
     v = lambda logic_array_object: logic_array_object.get().to_unsigned()
     dut._log.info("Start")
 
@@ -52,7 +61,7 @@ async def test_project(dut):
         if i == 13: await log_7seg()
 
         # dut._log.info(f"Turkeys: {dut.user_project.top.turkeys}")
-        assert v(dut.user_project.top.turkeys) == i
+        if ass: assert v(dut.user_project.top.turkeys) == i
 
         dut.ui_in.value = 0b00000001
 
@@ -70,7 +79,7 @@ async def test_project(dut):
 
         await ClockCycles(dut.clk, 60)
 
-    assert v(dut.user_project.top.turkeys) == 0
+    if ass: assert v(dut.user_project.top.turkeys) == 0
 
     # Test decrementation
     for i in range(255):
@@ -87,7 +96,7 @@ async def test_project(dut):
         
         # the number is stored unsigned and when displaying it on the 7seg it's
         # converted into 2's complement
-        assert v(dut.user_project.top.turkeys) == 255 - i
+        if ass: assert v(dut.user_project.top.turkeys) == 255 - i
 
     await log_7seg()
 

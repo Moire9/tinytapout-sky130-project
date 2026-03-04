@@ -38,6 +38,10 @@ The code is not amazing quality - it's hastily adapated CSE 100 code, I'll be
 honest. It has barely scratched the surface of the mind-croggling powers of
 openroad. But it's given me a good taste of what I can, and will, be doing. :D
 
+I had some trouble porting the clocks. It relies on somewhat specific timings,
+and I'm honestly not entirely sure if it still works completely. Like I said,
+CSE 100 jank.
+
 GenAI usage: consulted with some tools for help debugging verilog with limited
 success. The `clock_divider` module is something that I wrote filtered through
 an LLM because it wasn't working, I ended up copying its output wholesale (did
@@ -60,8 +64,11 @@ display modules with the currently active one selected by one of the output pins
 ## How to test
 
 The test script tests the full range of incrementation and decrementation
-capabilities. It also logs the 7-segment output at a few points, but it's a bit
-hard to interpret.
+capabilities. That's all it need do to be a success. It also logs the
+7-segment output at a few points, but it's a bit hard to interpret.
+
+One limitation of the testing script is that I'm not sure how to access data
+paths for gate-level, so we can't quantitatively evaluate that it works.
 
 ## External hardware
 
