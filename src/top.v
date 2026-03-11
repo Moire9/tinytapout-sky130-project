@@ -8,7 +8,9 @@ module top(
 
 	output [6:0] seg_o,
 	output [3:0] an_o,
-	output [3:0] led_o
+	output [3:0] led_o,
+
+	output [7:0] debug_turkeys_o
 );
 
 // DEFINITIONS
@@ -36,6 +38,8 @@ wire [7:0] turkeys;
 wire negative_turkeys = turkeys[7];
 wire [7:0] turkeys_inverted = ~turkeys + 1;
 wire [7:0] turkeys_abs = `IF(8, negative_turkeys, turkeys_inverted, turkeys);
+
+assign debug_turkeys_o = turkeys;
 
 reg ever_crossed; // Starts at 0 then goes 1 forever
 wire ever_crossed_d;

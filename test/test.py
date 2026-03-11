@@ -22,15 +22,6 @@ async def test_project(dut):
         sevenseg = sevenseg << 8 | v(dut.uo_out)
         dut._log.info(hex(sevenseg))
 
-    ass = True
-
-    try: # check if we can access submodules
-        dut.user_project.top
-    except AttributeError:
-        dut._log.info("Skipping assert - we are not able to evaluate gate-level because cocotb does not"
-            + "give us access to the datapaths directly (or maybe I'm missing something obvious)")
-        ass = False
-
     v = lambda logic_array_object: logic_array_object.get().to_unsigned()
     dut._log.info("Start")
 
@@ -44,7 +35,7 @@ async def test_project(dut):
     # Reset
     dut._log.info("Reset")
     dut.ena.value = 1
-    dut.ui_in.value = 0
+    dut.ui_in.value = 0b00000000
     dut.uio_in.value = 0
     dut.rst_n.value = 0
     await ClockCycles(dut.clk, 100)
@@ -53,50 +44,64 @@ async def test_project(dut):
     dut._log.info("Test project behavior")
 
     await log_7seg()
+    dut.ui_in.value = 0b10000000
+    await ClockCycles(dut.clk, 1)
 
     # For some reason the logic runs 13.2 times slower than expected
 
     # Test incrementation
     for i in range(256):
-        if i == 13: await log_7seg()
+        if i == 13:
+            dut.ui_in.value = 0b00000000
+            await ClockCycles(dut.clk, 1)
+            await log_7seg()
+            dut.ui_in.value = 0b10000000
+            await ClockCycles(dut.clk, 1)
 
         # dut._log.info(f"Turkeys: {dut.user_project.top.turkeys}")
-        if ass: assert v(dut.user_project.top.turkeys) == i
+        assert v(dut.uo_out) == i
 
-        dut.ui_in.value = 0b00000001
-
-        await ClockCycles(dut.clk, 60)
-
-        dut.ui_in.value = 0b00000011
+        dut.ui_in.value = 0b10000001
 
         await ClockCycles(dut.clk, 60)
 
-        dut.ui_in.value = 0b00000010
+        dut.ui_in.value = 0b10000011
 
         await ClockCycles(dut.clk, 60)
 
-        dut.ui_in.value = 0b00000000
+        dut.ui_in.value = 0b10000010
 
         await ClockCycles(dut.clk, 60)
 
-    if ass: assert v(dut.user_project.top.turkeys) == 0
+        dut.ui_in.value = 0b10000000
+
+        await ClockCycles(dut.clk, 60)
+
+    assert v(dut.uo_out) == 0
 
     # Test decrementation
     for i in range(255):
-        if i == 242: await log_7seg()
+        if i == 242:
+            dut.ui_in.value = 0b00000000
+            await ClockCycles(dut.clk, 1)
+            await log_7seg()
+            dut.ui_in.value = 0b10000000
+            await ClockCycles(dut.clk, 1)
 
-        dut.ui_in.value = 0b00000010
+        dut.ui_in.value = 0b10000010
         await ClockCycles(dut.clk, 60)
-        dut.ui_in.value = 0b00000011
+        dut.ui_in.value = 0b10000011
         await ClockCycles(dut.clk, 60)
-        dut.ui_in.value = 0b00000001
+        dut.ui_in.value = 0b10000001
         await ClockCycles(dut.clk, 60)
-        dut.ui_in.value = 0b00000000
+        dut.ui_in.value = 0b10000000
         await ClockCycles(dut.clk, 60)
         
         # the number is stored unsigned and when displaying it on the 7seg it's
         # converted into 2's complement
-        if ass: assert v(dut.user_project.top.turkeys) == 255 - i
+        assert v(dut.uo_out) == 255 - i
 
+
+    dut.ui_in.value = 0b00000000
     await log_7seg()
 
