@@ -7,7 +7,7 @@ You can also include images in this folder and reference them in the markdown. E
 512 kb in size, and the combined size of all images must be less than 1 MB.
 -->
 
-# generic CSE 100 lab implementation
+# Object Counter (CSE 100 Lab)
 To be honest this is not what I wanted to do. My original plan for this
 assignment was to implement a simple calculator on one of those generic LCD
 modules that all have Hitachi controller clones. The goal was to have the
@@ -66,9 +66,6 @@ display modules with the currently active one selected by one of the output pins
 The test script tests the full range of incrementation and decrementation
 capabilities. That's all it need do to be a success. It also logs the
 7-segment output at a few points, but it's a bit hard to interpret.
-
-One limitation of the testing script is that I'm not sure how to access data
-paths for gate-level, so we can't quantitatively evaluate that it works.
 
 ## External hardware
 
