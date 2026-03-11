@@ -6,10 +6,9 @@ module top(
 	input btnL_async_i,
 	input btnR_async_i,
 
-	output        dp_o,
-	output [6:0]  seg_o,
-	output [3:0]  an_o,
-	output [15:0] led_o
+	output [6:0] seg_o,
+	output [3:0] an_o,
+	output [3:0] led_o
 );
 
 // DEFINITIONS
@@ -17,12 +16,6 @@ module top(
 parameter [0:0] DIRECTION_R2L = 1; // positive
 parameter [0:0] DIRECTION_L2R = 0; // negative
 
-// reg [23:0] clk_counter_4hz = 0;
-// // wire[23:0] clk_counter_4hz_d = (clk_counter_4hz_q == 12500000) ? 0 : clk_counter_4hz_q + 1;
-// reg [3 :0] clk_counter_11mhz = 0;
-// // wire[3 :0] clk_counter_11mhz_d = (clk_counter_11mhz_q == 9) ? 0 : clk_counter_11mhz_q + 1;
-// reg [20:0] clk_counter_digsel = 0;
-// // wire[20:0] clk_counter_digsel_d = (clk_counter_digsel_q == 1666667) ? 0 : clk_counter_digsel_q + 1;
 wire clk_4Hz;
 wire clk_i; // 11 Mhz
 wire digsel; // 60 Hz
@@ -42,7 +35,6 @@ wire btnL, btnR;
 wire [7:0] turkeys;
 wire negative_turkeys = turkeys[7];
 wire [7:0] turkeys_inverted = ~turkeys + 1;
-// inc #(.WIDTH(8)) inc(.i(~turkeys), .o(turkeys_inverted));
 wire [7:0] turkeys_abs = `IF(8, negative_turkeys, turkeys_inverted, turkeys);
 
 reg ever_crossed; // Starts at 0 then goes 1 forever
@@ -53,17 +45,6 @@ wire currently_crossing; // suspends LED direction
 
 wire strobe_increment_turkeys;
 wire strobe_decrement_turkeys;
-
-
-// CLOCKS
-
-//lab5_clks lab5_clks(
-//	.clkin (board_clk_i),
-//	.greset(btnU_async_i),
-//	.clk   (clk_i),
-//	.digsel(digsel),
-//	.qsec  (clk_4Hz)
-//);
 
 ring_counter ring_counter(
 	.clk_i    (clk_i),
@@ -92,12 +73,10 @@ always @(posedge clk_i or posedge reset_i) begin
 	end
 end
 
-// `FCDQ(clk_i, last_direction_d, last_direction);
 assign last_direction_d = (strobe_increment_turkeys & DIRECTION_R2L) |
 	(strobe_decrement_turkeys & DIRECTION_L2R) |
 	((~strobe_decrement_turkeys & ~strobe_increment_turkeys) & last_direction);
 
-// `FCDQ(clk_i, ever_crossed_d, ever_crossed);
 assign ever_crossed_d = ever_crossed | strobe_decrement_turkeys | strobe_increment_turkeys;
 
 // INPUT
@@ -134,20 +113,14 @@ hex7seg hex7seg(
 
 assign seg_o = `IF(7, hex_digit_index[2], 7'b0111111, encoded_digit);
 
-assign dp_o = 1;
-
 led_cycler led_cycler(
 	.clk_i      (clk_i),
 	.reset_i    (reset_i),
 	.cycle_i    (clk_4Hz),
 	.direction_i(last_direction),
 	.enable_i   (!currently_crossing && ever_crossed),
-	.led_o      (led_o[7:0])
+	.led_o      (led_o[3:0])
 );
-
-assign led_o[15] = btnL;
-assign led_o[14:9] = 0;
-assign led_o[8] = btnR;
 
 // FSM
 

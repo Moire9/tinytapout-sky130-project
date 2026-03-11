@@ -5,7 +5,7 @@
 
 `default_nettype none
 
-module tt_um_moire9_abysmal_dogshit_application (
+module tt_um_moire9_directional_counter (
     input  wire [7:0] ui_in,    // Dedicated inputs
     output wire [7:0] uo_out,   // Dedicated outputs
     input  wire [7:0] uio_in,   // IOs: Input path
@@ -17,17 +17,15 @@ module tt_um_moire9_abysmal_dogshit_application (
 );
 
   assign uio_oe = 8'b11111111;
-  wire [15:0] led_o;
-  assign uio_out[7:4] = led_o[3:0];
+
   top top(
 		.board_clk_i(clk),
 		.reset_i(~rst_n),
 		.btnR_async_i(ui_in[0]),
 		.btnL_async_i(ui_in[1]),
-		// .dp_o(uo_out[7]), // TODO
 		.seg_o(uo_out[6:0]),
 		.an_o(uio_out[3:0]),
-		.led_o(led_o)
+		.led_o(uio_out[7:4])
   );
 
   assign uo_out[7] = 1'b0;
